@@ -13,8 +13,37 @@ understand.
 def parse(source):
     """Parse string representation of one *single* expression
     into the corresponding Abstract Syntax Tree."""
+    source = remove_comments(source)
+    source = source.strip()
+    
+    if source == '#t': return True
+    elif source == '#f': return False
 
-    raise NotImplementedError("DIY")
+    try: return int(source)
+    except: pass
+
+    if is_block(source):
+        return parse_block(source)
+    elif is_quote(source):
+        return parse_quote(source)
+
+    return source
+
+def is_block(source):
+    return source[0] == '('
+
+def parse_block(source):
+    end_paren = find_matching_paren(source)
+    if end_paren != len(source)-1:
+        raise LispError("Expected EOF")
+    source = source[1:end_paren]
+    return parse_multiple(source)
+
+def is_quote(source):
+    return source[0] == '\''
+
+def parse_quote(source):
+    return ['quote', parse(source[1:])]
 
 ##
 ## Below are a few useful utility functions. These should come in handy when 
