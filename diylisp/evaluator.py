@@ -18,11 +18,19 @@ def evaluate(ast, env):
     """Evaluate an Abstract Syntax Tree in the specified environment."""
     if is_list(ast):
         operator = ast[0]
-        evaled = map(lambda expr: evaluate(expr, env), ast[1:])
 
+        # Part that does not evaluate arguments necessarily
         if operator == "quote":
-            return evaled[0]
-        elif operator == "atom":
+            return ast[1] 
+        elif operator == "if":
+            if evaluate(ast[1], env):
+                return evaluate(ast[2], env)
+            else:
+                return evaluate(ast[3], env)
+
+        # Part that always evaluates arguments
+        evaled = map(lambda expr: evaluate(expr, env), ast[1:])
+        if operator == "atom":
             return is_atom(evaled[0])
         elif operator == "eq":
             if not is_atom(evaled[0]) or not is_atom(evaled[1]):
@@ -30,6 +38,9 @@ def evaluate(ast, env):
             return evaled[0] ==evaled[1] 
         elif operator in ["+", "-", "/", "*", "mod", ">"]:
             return evaluate_math(operator, evaled[0], evaled[1])
+        else:
+            raise LispError
+
     return ast
 
 def evaluate_math(operator, left, right):
