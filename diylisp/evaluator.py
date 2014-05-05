@@ -46,12 +46,10 @@ def evaluate(ast, env):
             return evaled[0] ==evaled[1] 
         elif operator in ["+", "-", "/", "*", "mod", ">"]:
             return evaluate_math(operator, evaled[0], evaled[1])
-        else:
-            raise LispError
 
     try:
         return env.lookup(ast)
-    except LispError as e:
+    except Exception as e:
         if is_symbol(ast):
             raise e
         return ast
