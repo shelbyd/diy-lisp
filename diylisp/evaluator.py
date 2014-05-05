@@ -17,32 +17,30 @@ in a day, after all.)
 def evaluate(ast, env):
     """Evaluate an Abstract Syntax Tree in the specified environment."""
     if is_list(ast):
-    	operator = ast[0]
-    	left = evaluate(ast[1], env)
-    	if len(ast) > 2:
-    		right = evaluate(ast[2], env)
+        operator = ast[0]
+        evaled = map(lambda expr: evaluate(expr, env), ast[1:])
 
-    	if operator == "quote":
-    		return left
-    	elif operator == "atom":
-    		return is_atom(left)
-    	elif operator == "eq":
-    		if not is_atom(left) or not is_atom(right):
-    			return False
-    		return left == right
-    	elif operator in ["+", "-", "/", "*", "mod", ">"]:
-    		return evaluate_math(operator, left, right)
+        if operator == "quote":
+            return evaled[0]
+        elif operator == "atom":
+            return is_atom(evaled[0])
+        elif operator == "eq":
+            if not is_atom(evaled[0]) or not is_atom(evaled[1]):
+                return False
+            return evaled[0] ==evaled[1] 
+        elif operator in ["+", "-", "/", "*", "mod", ">"]:
+            return evaluate_math(operator, evaled[0], evaled[1])
     return ast
 
 def evaluate_math(operator, left, right):
-	try:
-		left = int(left)
-		right = int(right)
-		if operator == "+": return left + right
-		elif operator == "-": return left - right
-		elif operator == "/": return left / right
-		elif operator == "*": return left * right
-		elif operator == "mod": return left % right
-		elif operator == ">": return left > right
-	except:
-		raise LispError
+    try:
+        left = int(left)
+        right = int(right)
+        if operator == "+": return left + right
+        elif operator == "-": return left - right
+        elif operator == "/": return left / right
+        elif operator == "*": return left * right
+        elif operator == "mod": return left % right
+        elif operator == ">": return left > right
+    except:
+        raise LispError
