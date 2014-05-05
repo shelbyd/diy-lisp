@@ -27,6 +27,14 @@ def evaluate(ast, env):
                 return evaluate(ast[2], env)
             else:
                 return evaluate(ast[3], env)
+        elif operator == "define":
+            if len(ast) == 3:
+                if is_symbol(ast[1]):
+                    return env.set(ast[1], evaluate(ast[2], env))
+                else:
+                    raise LispError("non-symbol")
+            else:
+                raise LispError("Wrong number of arguments")
 
         # Part that always evaluates arguments
         evaled = map(lambda expr: evaluate(expr, env), ast[1:])
@@ -41,7 +49,12 @@ def evaluate(ast, env):
         else:
             raise LispError
 
-    return ast
+    try:
+        return env.lookup(ast)
+    except LispError as e:
+        if is_symbol(ast):
+            raise e
+        return ast
 
 def evaluate_math(operator, left, right):
     try:
