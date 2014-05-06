@@ -123,3 +123,9 @@
                     (sort
                         (filter (lambda (x) (>= x (head list))) (tail list))))))))
 
+(define size
+    (lambda (list)
+        (if (empty list)
+            0
+            (+ 1 (size (tail list))))))
+
