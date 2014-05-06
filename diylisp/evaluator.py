@@ -64,6 +64,19 @@ def evaluate(ast, env):
             return evaled[0] ==evaled[1] 
         elif operator in ["+", "-", "/", "*", "mod", ">"]:
             return evaluate_math(operator, evaled[0], evaled[1])
+        elif operator == "cons":
+            l = [evaluate(ast[1], env)]
+            l.extend(evaluate(ast[2], env))
+            return l
+        elif operator == "head":
+            try:
+                return evaluate(ast[1], env)[0]
+            except IndexError:
+                raise LispError
+        elif operator == "tail":
+            return evaluate(ast[1], env)[1:]
+        elif operator == "empty":
+            return len(evaluate(ast[1], env)) == 0
         else:
             if is_symbol(operator):
                 # operator is possibly a function name
