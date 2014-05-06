@@ -1,8 +1,125 @@
 ;; Some logical operators.
 
-;;(define not
-;;    (lambda (b)
-;;        (if b #f #t)))
-(+ 1 2)
-;; DIY -- Implement the rest of your standard library
-;; here as part 7 of the workshop.
+(define not
+    (lambda (b)
+        (if b #f #t)))
+
+(define or
+    (lambda (a b)
+        (if a
+            #t
+            (if b #t #f))))
+
+(define and
+    (lambda (a b)
+        (if a
+            (if b #t #f)
+            #f)))
+
+(define xor
+    (lambda (a b)
+        (and
+            (or a b)
+            (not
+                (and a b)))))
+
+
+;; Some mathematical comparators
+(define >=
+    (lambda (a b)
+        (or
+            (> a b)
+            (eq a b))))
+
+(define <=
+    (lambda (a b)
+        (>= b a)))
+
+(define <
+    (lambda (a b)
+        (> b a)))
+
+;; Some mathematical operators
+
+(define sum
+    (lambda (list)
+        (if (empty list)
+        0
+        (+
+            (head list)
+            (sum (tail list))))))
+
+;; Some list operators
+
+(define length
+    (lambda (list)
+        (if (empty list)
+            0
+            (+
+                1
+                (length (tail list))))))
+
+(define append
+    (lambda (left right)
+        (if (empty left)
+            right
+            (cons
+                (head left)
+                (append
+                    (tail left)
+                    right)))))
+
+(define filter
+    (lambda (function list)
+        (if (empty list)
+            '()
+            (if (function (head list))
+                (cons
+                    (head list)
+                    (filter function (tail list)))
+                (filter function (tail list))))))
+
+(define map
+    (lambda (function list)
+        (if (empty list)
+            '()
+            (cons
+                (function (head list))
+                (map function (tail list))))))
+
+(define reverse
+    (lambda (list)
+        (if (empty list)
+            '()
+            (append
+                (reverse (tail list))
+                (cons
+                    (head list)
+                    '())))))
+
+(define range
+    (lambda (start stop)
+        (if (< stop start)
+            '()
+            (cons
+                start
+                (range (+ start 1) stop)))))
+
+(define sort
+    (lambda (list)
+        (if (empty list)
+            '()
+            (if (empty (tail list))
+                (cons
+                    (head list)
+                    '())
+                (append
+                    (append
+                        (sort
+                            (filter (lambda (x) (< x (head list))) (tail list)))
+                        (cons
+                            (head list)
+                            '()))
+                    (sort
+                        (filter (lambda (x) (>= x (head list))) (tail list))))))))
+

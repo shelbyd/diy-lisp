@@ -89,6 +89,9 @@ def test_filter():
             (lambda (x)
                 (eq (mod x 2) 0)))
     """, env)
+    assert_equals("()", interpret("(filter even '())", env))
+    assert_equals("(2)", interpret("(filter even '(2))", env))
+    assert_equals("()", interpret("(filter even '(3))", env))
     assert_equals("(2 4 6)", interpret("(filter even '(1 2 3 4 5 6))", env))
 
 def test_map():

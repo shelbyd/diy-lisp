@@ -72,7 +72,7 @@ def evaluate(ast, env):
             try:
                 return evaluate(ast[1], env)[0]
             except IndexError:
-                raise LispError
+                raise LispError("head called on empty list")
         elif operator == "tail":
             return evaluate(ast[1], env)[1:]
         elif operator == "empty":
